@@ -8,7 +8,7 @@ from card import Card, Cards
 
 
 POKERS_AMOUNT = 54
-POKERS = list("A234567890JQK" * 4 + "wW")
+POKERS = list("A234567890JQK")# * 4 + "wW")
 MAX_PLAYER = 2
 
 
@@ -25,7 +25,7 @@ class Table(object):
     deal = Event(from_states=waiting, to_state=dealing)
     p1 = Event(from_states=(player2, dealing), to_state=player1)
     p2 = Event(from_states=player1, to_state=player2)
-    over = Event(from_states=(p1, p2), to_state=gameover)
+    over = Event(from_states=(player1, player2), to_state=gameover)
 
     # p1 always play first
 
@@ -62,8 +62,8 @@ class Table(object):
 
     def doPlay(self, p):
         self.last_round = self.players[p-1].play(self.last_round)
-        if self.last_round == PLAY_EMPTY:
-            self.over()
+        if self.players[p-1].isEmpty():
+            return self.over()
         self.p1() if p == 2 else self.p2()
 
 
@@ -79,7 +79,7 @@ class Table(object):
 
     @after("over")
     def doGameOver(self):
-        print("Winner is player%d" % (1 if not self.player1.hand_cards else 2))
+        print("Winner is player%d" % (1 if self.player1.isEmpty() else 2))
         print("---------------")
         input("press any key to continue..")
         self.wait()

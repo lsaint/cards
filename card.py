@@ -6,8 +6,8 @@ CARDS = "A234567890JQK"+"wW"
 class Card(object):
 
     def __init__(self, c):
-        if c not in CARDS:
-            raise "not exists card "  + c
+        if c.upper() not in CARDS:
+            raise BaseException("not exists card "  + c)
         self.string = c.upper() if c != "w" else "w"
 
 
@@ -37,10 +37,6 @@ class Cards(list):
             return "-"
         ret = sorted(self.strings, key=sortfunc)
         return "-".join(ret)
-
-
-    def isEmpty(self):
-        return not bool(len(self))
 
 
     def isContain(self, cards):

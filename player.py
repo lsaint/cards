@@ -5,7 +5,6 @@ from card import Cards
 
 
 PLAY_FIRST = "first"
-PLAY_EMPTY = "empty"
 PLAY_PASS = "pass"
 
 class Player(object):
@@ -40,11 +39,14 @@ class Player(object):
         self.hand_cards.remove(cards)
 
 
+    def isEmpty(self):
+        return not bool(len(self.hand_cards.strings))
+
 
 class AIPlayer(Player):
 
     def play(self, last_round):
-        ret = self.hand_cards[random.randint(0, len(self.hand_cards.strings))]
+        ret = self.hand_cards[random.randint(0, len(self.hand_cards.strings)-1)]
         print("AI Player play %s" % ret)
         return ret
 

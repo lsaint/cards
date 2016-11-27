@@ -1,7 +1,7 @@
 import random
 
 from rule import *
-from card import Cards
+from card import Cards,Card
 
 
 PLAY_FIRST = "first"
@@ -48,5 +48,6 @@ class AIPlayer(Player):
     def play(self, last_round):
         ret = self.hand_cards[random.randint(0, len(self.hand_cards.strings)-1)]
         print("AI Player play %s" % ret)
+        self.removeCards(Cards(ret))
         return ret
 

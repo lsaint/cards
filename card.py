@@ -16,20 +16,22 @@ class Card(object):
 
 
 
-class Cards(list):
+class Cards(object):
 
-    def __init__(self, strings):
-        list.__init__([])
+    def __init__(self, ss):
+        if isinstance(ss, Card):
+            self.strings = ss.string
         self.strings = ""
-        for s in strings:
+        for s in ss:
             self.append(Card(s))
 
 
-    def append(self, item):
-        if not isinstance(item, Card):
-            raise TypeError('Card type only')
-        super(Cards, self).append(item)
-        self.strings += str(item)
+    def __len__(self):
+        return len(self.strings)
+
+
+    def __getitem__(self,index):
+        return self.strings[index]
 
 
     def __str__(self):
@@ -37,6 +39,10 @@ class Cards(list):
             return "-"
         ret = sorted(self.strings, key=sortfunc)
         return "-".join(ret)
+
+
+    def append(self, item):
+        self.strings += str(item)
 
 
     def isContain(self, cards):

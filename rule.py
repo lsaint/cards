@@ -1,7 +1,7 @@
 from collections import Counter
 import json
 
-cardsType = [
+CARD_TYPE = [
     #'rocket', 'bomb',
     'single', 'pair', 'trio', 'trio_pair', 'trio_single',
     'seq_single5', 'seq_single6', 'seq_single7', 'seq_single8', 'seq_single9', 'seq_single10', 'seq_single11', 'seq_single12',
@@ -11,91 +11,58 @@ cardsType = [
     'seq_trio_single2', 'seq_trio_single3', 'seq_trio_single4', 'seq_trio_single5',
     'bomb_pair', 'bomb_single'
 ]
+ROCKET = "wW"
+MAX_VALUE   = 3737
+MIN_VALUE   = -4466
+BOMB_VALUE  = 1000
+
 
 
 with open('rule.json', 'r') as f:
-    ruleList = json.load(f)
+    RULE_LIST = json.load(f)
 
 
 def sortfunc(a):
     return '34567890JQKA2wW'.index(a)
 
 
-def toCards(pokers):
-    cards = []
-    for p in pokers:
-        cards.append(numberToCard(p))
-    return cards
-
-
-def numberToCard(num):
-    if num == 52:
-        return "w"
-    if num == 53:
-        return "W"
-    return 'A234567890JQK'[num%13]
-
-
-def cardsValue(cards):
-
-    def find(array, ele):
-        if len(array[0]) != len(ele):
-            return -1
-        for i, e in enumerate(array):
-            if e == ele:
-                return i
+def findRuleType(rule_type_lt, strings):
+    if len(rule_type_lt[0]) != len(strings):
         return -1
+    for i, e in enumerate(rule_type_lt):
+        if e == strings:
+            return i
+    return -1
 
-    if isinstance(cards, list):
-        cards = toCards(cards)
-    cards = ''.join(sorted(cards, key=sortfunc))
 
-    if cards == 'wW':
-        return ('rocket', 2000)
+def cardsValue(strings):
+    strings = ''.join(sorted(strings, key=sortfunc))
 
-    value = find(ruleList['bomb'], cards)
+    if strings == ROCKET:
+        return ('rocket', MAX_VALUE)
+
+    value = findRuleType(RULE_LIST['bomb'], strings)
     if value >= 0:
-        return ('bomb', 1000 + value)
+        return ('bomb', BOMB_VALUE + value)
 
-    for t in cardsType:
-        value = find(ruleList[t], cards)
+    for t in CARD_TYPE:
+        value = findRuleType(RULE_LIST[t], strings)
         if value >= 0:
             return (t, value)
 
     return ('', 0)
 
 
-def cardsAbove(handCards, turnCards):
-    pair = cardsValue(turnCards)
-    if pair[0] == '':
-        return ''
-
-    handCards = sorted(handCards, keys=sortfunc)
-    oneRule = ruleList[pair[0]]
-    for i, t in enumerate(oneRule):
-        if i > pair[1] and containsAll(handCards, t):
-            return t
-
-    if pair[1] < 1000:
-        oneRule = ruleList['bomb']
-        for t in oneRule:
-            if containsAll(handCards, t):
-                return t
-        if containsAll(handCards, 'wW'):
-            return 'wW'
-    return ''
-
-
-def compare(cardsA, cardsB):
-    valueA = cardsValue(cardsA)
+def compare(strings_a, strings_b):
+    valueA = cardsValue(strings_a)
     if valueA[0] == '':
-        return -10000
+        return MIN_VALUE
 
-    valueB = cardsValue(cardsB)
+    valueB = cardsValue(strings_b)
     if valueA[0] == valueB[0]:
         return valueA[1] - valueB[1]
 
-    if valueA[1] >= 1000:
+    if valueA[1] >= BOMB_VALUE:
         return valueA[1] - valueB[1]
     else:
         return 0

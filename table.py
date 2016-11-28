@@ -1,4 +1,4 @@
-import random
+import random, sys
 
 from state_machine import *
 
@@ -60,7 +60,10 @@ class Table(object):
 
 
     def doPlay(self, p):
-        self.last_round = self.players[p-1].play(self.last_round)
+        try:
+            self.last_round = self.players[p-1].play(self.last_round)
+        except KeyboardInterrupt:
+            sys.exit()
         if self.players[p-1].isEmpty():
             return self.over()
         self.p1() if p == 2 else self.p2()

@@ -30,7 +30,6 @@ class Table(object):
     # p1 always play first
 
     def __init__(self):
-        self.checker = None
         self.players = []
         self.last_round = PLAY_FIRST
 

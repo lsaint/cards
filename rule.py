@@ -17,7 +17,6 @@ MIN_VALUE   = -4466
 BOMB_VALUE  = 1000
 
 
-
 with open('rule.json', 'r') as f:
     RULE_LIST = json.load(f)
 
@@ -35,7 +34,7 @@ def findRuleType(rule_type_lt, strings):
     return -1
 
 
-def cardsValue(strings):
+def cardStringsValue(strings):
     strings = ''.join(sorted(strings, key=sortfunc))
 
     if strings == ROCKET:
@@ -53,12 +52,17 @@ def cardsValue(strings):
     return ('', 0)
 
 
-def compare(strings_a, strings_b):
-    valueA = cardsValue(strings_a)
-    if valueA[0] == '':
+# result > 0 is sucess
+def validate(strings):
+    value = cardStringsValue(strings)
+    if value[0] == '':
         return MIN_VALUE
+    return value[1]
 
-    valueB = cardsValue(strings_b)
+
+def compare(strings_a, strings_b):
+    valueA = cardStringsValue(strings_a)
+    valueB = cardStringsValue(strings_b)
     if valueA[0] == valueB[0]:
         return valueA[1] - valueB[1]
 
@@ -68,7 +72,6 @@ def compare(strings_a, strings_b):
         return 0
 
 
-# 检验玩家出的牌是否在手牌中
 def containsAll(parent, child):
     parent, child = Counter(parent), Counter(child)
     for k, n in child.items():
@@ -78,10 +81,11 @@ def containsAll(parent, child):
 
 
 if __name__ == '__main__':
+    print("validate('0000AAJJ')", validate('0000AAJJ')) # sucess
+    print("validate('KK33')", validate('KK33'))         # fail
+
     print('compare("AAAK", "5552")', compare('AAAK', '5552'))
-    print('cardsValue("AAAA")', cardsValue('AAAA'))
+    print('cardStringsValue("AAAA")', cardStringsValue('AAAA'))
 
     print('compare("A", "K")', compare('A', 'K'))
-
-
 

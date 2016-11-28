@@ -18,13 +18,13 @@ class Player(object):
         print("hand: %s \n" % self.hand_cards)
         inputs = input("your turn, enter letter to play or enter p to pass:")
         check_ret = False
-        while not check_ret:
+        while  check_ret is not True:
             if inputs.lower() == "p":
                 return PLAY_PASS
             check_ret = self.check(inputs)
-            if check_ret:
+            if check_ret is True:
                 break
-            inputs = input("played not exist card!\nyour turn:")
+            inputs = input(check_ret)
 
         cards = Cards(inputs)
         self.removeCards(cards)
@@ -32,7 +32,12 @@ class Player(object):
 
 
     def check(self, inputs):
-        return self.hand_cards.isContain(Cards(inputs))
+        if not self.hand_cards.isContain(Cards(inputs)):
+            return "played not exist card!  your turn:"
+        if validate(inputs) < 0:
+            return "invalid card type! your turn:"
+
+        return True
 
 
     def removeCards(self, cards):

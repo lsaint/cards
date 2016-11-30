@@ -25,6 +25,10 @@ def sortfunc(a):
     return '34567890JQKA2wW'.index(a)
 
 
+def sortCardStrings(ss):
+    return ''.join(sorted(ss, key=sortfunc))
+
+
 def findRuleType(rule_type_lt, strings):
     if len(rule_type_lt[0]) != len(strings):
         return -1
@@ -35,7 +39,7 @@ def findRuleType(rule_type_lt, strings):
 
 
 def cardStringsValue(strings):
-    strings = ''.join(sorted(strings, key=sortfunc))
+    strings = sortCardStrings(strings)
 
     if strings == ROCKET:
         return ('rocket', MAX_VALUE)

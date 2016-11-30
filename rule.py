@@ -11,7 +11,7 @@ CARD_TYPE = [
     'seq_trio_single2', 'seq_trio_single3', 'seq_trio_single4', 'seq_trio_single5',
     'bomb_pair', 'bomb_single'
 ]
-ROCKET = "Ww"
+ROCKET = "wW"
 MAX_VALUE   = 3737
 MIN_VALUE   = -4466
 BOMB_VALUE  = 1000
@@ -22,7 +22,7 @@ with open('rule.json', 'r') as f:
 
 
 def sortfunc(a):
-    return 'Ww2AKQJ09876543'.index(a)
+    return '34567890JQKA2wW'.index(a)
 
 
 def findRuleType(rule_type_lt, strings):

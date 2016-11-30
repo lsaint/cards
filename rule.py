@@ -11,7 +11,7 @@ CARD_TYPE = [
     'seq_trio_single2', 'seq_trio_single3', 'seq_trio_single4', 'seq_trio_single5',
     'bomb_pair', 'bomb_single'
 ]
-ROCKET = "wW"
+ROCKET = "Ww"
 MAX_VALUE   = 3737
 MIN_VALUE   = -4466
 BOMB_VALUE  = 1000
@@ -22,7 +22,7 @@ with open('rule.json', 'r') as f:
 
 
 def sortfunc(a):
-    return '34567890JQKA2wW'.index(a)
+    return 'Ww2AKQJ09876543'.index(a)
 
 
 def findRuleType(rule_type_lt, strings):
@@ -61,13 +61,13 @@ def validate(strings):
 
 
 def compare(strings_a, strings_b):
-    valueA = cardStringsValue(strings_a)
-    valueB = cardStringsValue(strings_b)
-    if valueA[0] == valueB[0]:
-        return valueA[1] - valueB[1]
+    va = cardStringsValue(strings_a)
+    vb = cardStringsValue(strings_b)
+    if va[0] == vb[0]:
+        return va[1] - vb[1]
 
-    if valueA[1] >= BOMB_VALUE:
-        return valueA[1] - valueB[1]
+    if va[1] >= BOMB_VALUE:
+        return va[1] - vb[1]
     else:
         return 0
 
@@ -83,9 +83,10 @@ def containsAll(parent, child):
 if __name__ == '__main__':
     print("validate('0000AAJJ')", validate('0000AAJJ')) # sucess
     print("validate('KK33')", validate('KK33'))         # fail
-
     print('compare("AAAK", "5552")', compare('AAAK', '5552'))
-    print('cardStringsValue("AAAA")', cardStringsValue('AAAA'))
-
     print('compare("A", "K")', compare('A', 'K'))
+
+    print('cardStringsValue("AAAA")', cardStringsValue('AAAA'))
+    print('cardStringsValue("AA")', cardStringsValue('AA'))
+    print('cardStringsValue("AAA")', cardStringsValue('AAA'))
 

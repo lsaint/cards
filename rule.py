@@ -1,5 +1,6 @@
 from collections import Counter
 import json
+from difflib import SequenceMatcher
 
 CARD_TYPE = [
     #'rocket', 'bomb',
@@ -88,6 +89,17 @@ def containsAll(parent, child):
     return True
 
 
+def findSeq(ss, seq_count=2):
+    s = SequenceMatcher(None, ss, LONGEST_SEQ)
+    m = s.get_matching_blocks()
+    ret = []
+    for i in m:
+        if i.size >= seq_count:
+            ret.append(ss[i.a : i.a+i.size])
+    return ret
+
+
+
 if __name__ == '__main__':
     print("validate('0000AAJJ')", validate('0000AAJJ')) # sucess
     print("validate('KK33')", validate('KK33'))         # fail
@@ -98,4 +110,6 @@ if __name__ == '__main__':
     print('cardStringsValue("AA")', cardStringsValue('AA'))
     print('cardStringsValue("AAA")', cardStringsValue('AAA'))
 
-    print(ALL_SEQ)
+    test = "346890"
+    print(findSeq(test))
+

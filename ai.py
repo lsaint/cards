@@ -1,4 +1,4 @@
-
+# coding: utf-8
 # 拆牌
 #  |__ 抽牌
 #  |__ 组牌
@@ -7,6 +7,7 @@
 #  权重
 
 import itertools
+import difflib
 from collections import Counter
 from rule import RULE_LIST, sortCardStrings
 
@@ -29,13 +30,23 @@ def split(count, strings):
 
 def splitL(strings):
     strings = sortCardStrings(strings)
+    str_set = sortCardStrings("".join(set(strings)))
     all_seq = []
     for i in range(5, 13)[::-1]:
         all_seq.extend(RULE_LIST["seq_single%s"%i])
     for seq in all_seq:
-        if strings.find(seq) >= 0:
-            return seq, strings.replace(seq, "")
+        if str_set.find(seq) >= 0:
+            df = strDelDiff(strings, str_set)
+            return seq, sortCardStrings(str_set.replace(seq, "") + df)
     return "", strings
+
+
+def strDelDiff(a, b):
+    ret = []
+    for d in difflib.ndiff(a, b):
+        if d[0] == "-":
+            ret.append(d[-1])
+    return "".join(ret)
 
 
 def split1(s):return splitL(s)
@@ -81,10 +92,6 @@ class HandCards(object):
                             tuple(self.split4)]))
 
 
-    def ship(self, split_type, ss):
-        setattr(self, "split%s" % split_type, ss)
-
-
     def __str__(self):
         return "%s %s %s" % (str([self.split0, self.split1, self.split2, self.split3, self.split4]),
                                 "hands:%s" % self.hands,
@@ -104,13 +111,25 @@ class HandCards(object):
                 self.weight == rhs.weight
 
 
+    def ship(self, split_type, ss):
+        setattr(self, "split%s" % split_type, ss)
+
+
+    def calHands(self):
+        pass
+
+
+    def calWeight(self):
+        pass
+
+
 
 
 if __name__ == '__main__':
     import pprint
     import timeit
 
-    test = "w222AAQQQQJ098766544"
+    test = "w222AAQQQJ098766544"
     print("test", test)
     print("split(2)", split(2, test))
     print("split(3)", split(3, test))

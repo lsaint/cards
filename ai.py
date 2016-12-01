@@ -1,15 +1,23 @@
 # coding: utf-8
+
 # 拆牌
 #  |__ 抽牌
 #  |__ 组牌
 #
 #  手数
 #  权重
+#  |__ 单张                             1
+#  |__ 对子                             2
+#  |__ 三带                             3
+#  |__ 连牌                             4 (每多一张牌权值+1)
+#  |__ 连对                             5 (每多一对牌，权值+2)
+#  |__ 飞机                             6 (每对以飞机，权值在基础上+3)
+#  |__ 炸弹                             7 (包括对王在内)
 
 import itertools
 import difflib
 from collections import Counter
-from rule import RULE_LIST, sortCardStrings
+from rule import RULE_LIST, ALL_SEQ, sortCardStrings
 
 
 
@@ -31,10 +39,7 @@ def split(count, strings):
 def splitL(strings):
     strings = sortCardStrings(strings)
     str_set = sortCardStrings("".join(set(strings)))
-    all_seq = []
-    for i in range(5, 13)[::-1]:
-        all_seq.extend(RULE_LIST["seq_single%s"%i])
-    for seq in all_seq:
+    for seq in ALL_SEQ:
         if str_set.find(seq) >= 0:
             df = strDelDiff(strings, str_set)
             return seq, sortCardStrings(str_set.replace(seq, "") + df)
@@ -68,13 +73,17 @@ def genAllKindHandCards(strings):
         hc.ship(0, s)
         if len(hcs) == 0 or hc != hcs[-1]:
             hcs.append(hc)
+    hcs = set(hcs)
+    for hc in hcs:
+        hc.cal()
     return hcs
+
 
 
 class HandCards(object):
 
     def __init__(self):
-        self.split0 = []
+        self.split0 = ""
         self.split1 = ""
         self.split2 = []
         self.split3 = []
@@ -116,12 +125,33 @@ class HandCards(object):
 
 
     def calHands(self):
-        pass
+        c0 = len(self.split0)
+        c1 = 0 if (len(self.split1) == 0) else 1
+        c2 = len(self.split2)
+        c3 = len(self.split3)
+        c4 = len(self.split4)
+        self.hands = -(c0 + c1 + c2 + c3 + c4)
+        return self.hands
 
 
     def calWeight(self):
-        pass
+        c0 = len(self.split0)
+        c1 = 0 if (len(self.split1) == 0) else (len(self.split1) - 1)
+        c2 = len(self.split2) * 2
+        c3 = len(self.split3) * 3
+        c4 = len(self.split4) * 7
+        self.weight = c0 + c1 + c2 + c3 + c4
+        return self.weight
 
+
+    def calPairSeq(self):
+        s2 = sortCardStrings(set("".join(self.split2)))
+
+
+    def cal(self):
+        self.calHands()
+        self.calWeight()
+        self.calPairSeq()
 
 
 
@@ -129,7 +159,7 @@ if __name__ == '__main__':
     import pprint
     import timeit
 
-    test = "w222AAQQQJ098766544"
+    test = "w222AAQQQJ0987665544"
     print("test", test)
     print("split(2)", split(2, test))
     print("split(3)", split(3, test))
@@ -142,5 +172,5 @@ if __name__ == '__main__':
     ret = genAllKindHandCards(test)
     stop = timeit.default_timer()
 
-    pp.pprint(set(ret))
+    pp.pprint(ret)
     print(stop-start)

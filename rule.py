@@ -19,6 +19,10 @@ BOMB_VALUE  = 1000
 
 with open('rule.json', 'r') as f:
     RULE_LIST = json.load(f)
+    ALL_SEQ = []
+    for i in range(5, 13)[::-1]:
+        ALL_SEQ.extend(RULE_LIST["seq_single%s"%i])
+    LONGEST_SEQ = ALL_SEQ[0]
 
 
 def sortfunc(a):
@@ -94,3 +98,4 @@ if __name__ == '__main__':
     print('cardStringsValue("AA")', cardStringsValue('AA'))
     print('cardStringsValue("AAA")', cardStringsValue('AAA'))
 
+    print(ALL_SEQ)

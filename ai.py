@@ -17,7 +17,7 @@
 import itertools
 import difflib
 from collections import Counter
-from rule import RULE_LIST, ALL_SEQ, sortCardStrings
+from rule import *
 
 
 
@@ -89,6 +89,12 @@ class HandCards(object):
         self.split3 = []
         self.split4 = []
 
+        self.split22 = []
+        self.split33 = []
+
+        self.seq2_weight = 0
+        self.seq3_weight = 0
+
         self.hands = 0
         self.weight = 0
 
@@ -102,9 +108,12 @@ class HandCards(object):
 
 
     def __str__(self):
-        return "%s %s %s" % (str([self.split0, self.split1, self.split2, self.split3, self.split4]),
-                                "hands:%s" % self.hands,
-                                "weight:%s" % self.weight)
+        return "%s%s%s%s%s" % (str([self.split0, self.split1, self.split2, self.split3, self.split4,
+                                    self.split22, self.split33]),
+                                " s2w:{}".format(self.seq2_weight),
+                                " s3w:{}".format(self.seq3_weight),
+                                " hands:%s" % self.hands,
+                                " weight:%s" % self.weight)
 
     def __repr__(self):
         return self.__str__()
@@ -115,9 +124,7 @@ class HandCards(object):
                 len(self.split1) == len(rhs.split1) and\
                 len(self.split2) == len(rhs.split2) and\
                 len(self.split3) == len(rhs.split3) and\
-                len(self.split4) == len(rhs.split4) and\
-                self.hands == rhs.hands and\
-                self.weight == rhs.weight
+                len(self.split4) == len(rhs.split4)
 
 
     def ship(self, split_type, ss):
@@ -130,7 +137,9 @@ class HandCards(object):
         c2 = len(self.split2)
         c3 = len(self.split3)
         c4 = len(self.split4)
-        self.hands = -(c0 + c1 + c2 + c3 + c4)
+        c22 = len(self.split22)
+        c33 = len(self.split33)
+        self.hands = c0 + c1 + c2 + c3 + c4 + c22 + c33
         return self.hands
 
 
@@ -140,18 +149,34 @@ class HandCards(object):
         c2 = len(self.split2) * 2
         c3 = len(self.split3) * 3
         c4 = len(self.split4) * 7
-        self.weight = c0 + c1 + c2 + c3 + c4
+        self.weight = c0 + c1 + c2 + c3 + c4 + self.seq2_weight + self.seq3_weight
         return self.weight
 
 
-    def calPairSeq(self):
-        s2 = sortCardStrings(set("".join(self.split2)))
+    def calMultiSeq(self, mul, w, add):
+        r = sortCardStrings(set("".join(getattr(self, "split%s"%mul))))
+        seqs = findSeq(r)
+        if seqs == 0:
+            return
+        for seq in seqs:
+            rw = getattr(self, "seq%s_weight" % mul)
+            setattr(self, "seq%s_weight"%mul, rw + w + (len(seq)-2) * add)
+
+            for s in seq:
+                split = getattr(self, "split%s" % mul)
+                split.remove(s*mul)
+
+            seq *= mul
+            split = getattr(self, "split%s%s" % (mul, mul))
+            split.append(sortCardStrings(seq))
+            setattr(self, "split%s%s" % (mul, mul), split)
 
 
     def cal(self):
+        self.calMultiSeq(2, 5, 2)
+        self.calMultiSeq(3, 6, 3)
         self.calHands()
-        self.calWeight()
-        self.calPairSeq()
+        self.calWeight() # at last
 
 
 
@@ -159,7 +184,7 @@ if __name__ == '__main__':
     import pprint
     import timeit
 
-    test = "w222AAQQQJ0987665544"
+    test = "w222AAQQQJJJ098766544"
     print("test", test)
     print("split(2)", split(2, test))
     print("split(3)", split(3, test))

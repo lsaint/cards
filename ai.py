@@ -16,6 +16,7 @@
 
 import itertools
 import difflib
+import functools
 from collections import Counter
 from rule import *
 
@@ -78,6 +79,16 @@ def genAllKindHandCards(strings):
         hc.cal()
     return hcs
 
+
+def sortHandCards(hca, hcb):
+    if hca.hands == hcb.hands:
+        return hcb.weight - hca.weight
+    else:
+        return hca.hands - hcb.hands
+
+
+def determineHandCard(hcs):
+    return sorted(hcs, key=functools.cmp_to_key(sortHandCards))
 
 
 class HandCards(object):
@@ -180,6 +191,8 @@ class HandCards(object):
 
 
 
+
+
 if __name__ == '__main__':
     import pprint
     import timeit
@@ -190,12 +203,16 @@ if __name__ == '__main__':
     print("split(3)", split(3, test))
     print("split(4)", split(4, test))
     print("splitL()", splitL(test))
+    print()
 
     pp = pprint.PrettyPrinter()
 
     start = timeit.default_timer()
     ret = genAllKindHandCards(test)
     stop = timeit.default_timer()
-
     pp.pprint(ret)
     print(stop-start)
+
+    print("\nsort->")
+    pp.pprint(determineHandCard(ret))
+

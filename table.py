@@ -54,7 +54,7 @@ class Table(object):
     def doDeal(self):
         random.shuffle(POKERS)
         for i, v in enumerate(POKERS):
-            self.players[i % MAX_PLAYER].hand_cards.append(Card(POKERS[i]))
+            self.players[i % MAX_PLAYER].cards.append(POKERS[i])
 
         self.p1()
 

@@ -29,12 +29,8 @@ class Card(object):
 
 class Cards(object):
 
-    def __init__(self, ss):
-        if isinstance(ss, Card):
-            self.strings = ss.string
-        self.strings = ""
-        for s in ss:
-            self.append(Card(s))
+    def __init__(self, ss=""):
+        self.strings = upper(ss)
 
 
     def __len__(self):
@@ -53,7 +49,7 @@ class Cards(object):
 
 
     def append(self, item):
-        self.strings += str(item)
+        self.strings += upper(item)
 
 
     def isContain(self, cards):

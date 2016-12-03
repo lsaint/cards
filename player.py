@@ -11,7 +11,7 @@ class Player(object):
 
     def __init__(self):
         self.id = None
-        self.cards = Cards([])
+        self.cards = Cards()
 
 
     def play(self, last_round):

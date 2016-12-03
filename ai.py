@@ -191,13 +191,22 @@ class HandCards(object):
 
 
 
+class AIPlayer(object):
+
+    def __init__(self):
+        self.handcards = []
+        self.cur_hc = None
+
+
+
 
 
 if __name__ == '__main__':
     import pprint
     import timeit
 
-    test = "w222AAQQQJJJ098766544"
+    #test = "w222AAQQQJJJ098766544"
+    test = "22AAKQJ9987776654"
     print("test", test)
     print("split(2)", split(2, test))
     print("split(3)", split(3, test))

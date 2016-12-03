@@ -1,7 +1,7 @@
 import random
 
 from rule import *
-from card import Cards,Card
+from card import Cards,Card, upper
 
 
 PLAY_FIRST = "first"
@@ -21,6 +21,7 @@ class Player(object):
         while  check_ret is not True:
             if inputs.lower() == "p":
                 return PLAY_PASS
+            inputs = upper(inputs)
             check_ret = self.check(inputs)
             if check_ret is True:
                 break

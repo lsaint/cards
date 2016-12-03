@@ -3,6 +3,17 @@ from rule import *
 
 CARDS = "A234567890JQK"+"wW"
 
+
+def upper(ss):
+    w = ss.find('w')
+    if w <  0:
+        return ss.upper()
+    else:
+        lt = list(ss)
+        lt[w] = 'w'
+        return "".join(lt)
+
+
 class Card(object):
 
     def __init__(self, c):

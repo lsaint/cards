@@ -11,11 +11,11 @@ class Player(object):
 
     def __init__(self):
         self.id = None
-        self.hand_cards = Cards([])
+        self.cards = Cards([])
 
 
     def play(self, last_round):
-        print("hand: %s \n" % self.hand_cards)
+        print("hand: %s \n" % self.cards)
         inputs = input("your turn, enter letter to play or enter p to pass:")
         check_ret = False
         while  check_ret is not True:
@@ -33,7 +33,7 @@ class Player(object):
 
 
     def check(self, inputs):
-        if not self.hand_cards.isContain(Cards(inputs)):
+        if not self.cards.isContain(Cards(inputs)):
             return "played not exist card!  your turn:"
         if validate(inputs) < 0:
             return "invalid card type! your turn:"
@@ -42,17 +42,18 @@ class Player(object):
 
 
     def removeCards(self, cards):
-        self.hand_cards.remove(cards)
+        self.cards.remove(cards)
 
 
     def isEmpty(self):
-        return not bool(len(self.hand_cards.strings))
+        return not bool(len(self.cards.strings))
+
 
 
 class AIPlayer(Player):
 
     def play(self, last_round):
-        ret = self.hand_cards[random.randint(0, len(self.hand_cards.strings)-1)]
+        ret = self.cards[random.randint(0, len(self.cards.strings)-1)]
         print("AI Player play %s" % ret)
         self.removeCards(Cards(ret))
         return ret

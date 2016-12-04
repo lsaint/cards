@@ -40,13 +40,26 @@ def split(count, strings):
 
 
 def splitL(strings):
+    def trimSeq(l, seq):
+        ret = []
+        l = l
+        while l.find(seq) >= 0:
+            ret.append(seq)
+            l = l.replace(seq, "")
+        return l, ret
+
     strings = sortCardStrings(strings)
+    # remove same cards
     str_set = sortCardStrings("".join(set(strings)))
+    # cards removed
+    df = strDelDiff(strings, str_set)
+    ret = []
     for seq in ALL_SEQ:
-        if str_set.find(seq) >= 0:
-            df = strDelDiff(strings, str_set)
-            return seq, sortCardStrings(str_set.replace(seq, "") + df)
-    return "", strings
+        str_set, r1 = trimSeq(str_set, seq)
+        ret.extend(r1)
+        df, r2 = trimSeq(df, seq)
+        ret.extend(r2)
+    return ret, str_set + df
 
 
 def strDelDiff(a, b):
@@ -77,7 +90,7 @@ class HandCards(Cards):
     def __init__(self, strings):
         super().__init__(strings)
         self.split0 = ""
-        self.split1 = ""
+        self.split1 = []
         self.split2 = []
         self.split3 = []
         self.split4 = []
@@ -93,7 +106,7 @@ class HandCards(Cards):
 
     def __hash__(self):
         return hash(tuple([tuple(self.split0),
-                            self.split1,
+                            tuple(self.split1),
                             tuple(self.split2),
                             tuple(self.split3),
                             tuple(self.split4)]))
@@ -137,7 +150,9 @@ class HandCards(Cards):
 
     def calWeight(self):
         c0 = len(self.split0)
-        c1 = 0 if (len(self.split1) == 0) else (len(self.split1) - 1)
+        c1 = 0
+        for seq in self.split1:
+            c1 += len(seq) - 1
         c2 = len(self.split2) * 2
         c3 = len(self.split3) * 3
         c4 = len(self.split4) * 7
@@ -225,9 +240,9 @@ if __name__ == '__main__':
     import pprint
     import timeit
 
-    #test = "w222AAQQQJJJ098766544"
+    test = "w222AAQQQJJJ098766544"
     #test = "22AAKQJ9987776654"
-    test = "77994466330055"
+    #test = "3456790JQKA"
     print("test", test)
     print("split(2)", split(2, test))
     print("split(3)", split(3, test))

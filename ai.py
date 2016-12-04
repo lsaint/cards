@@ -18,7 +18,9 @@ import itertools
 import difflib
 import functools
 from collections import Counter
+
 from rule import *
+from card import Cards
 
 
 
@@ -62,24 +64,6 @@ def split4(s):return split(4, s)
 SPLIT_FUNC = {1: split1, 2: split2, 3: split3, 4: split4}
 
 
-def genAllKindHandCards(strings):
-    pmt = list(itertools.permutations(range(1, 5), 4))
-    hcs = []
-    for tp in pmt:
-        hc = HandCards()
-        s = strings
-        for split_type in tp:
-            lt, s = SPLIT_FUNC[split_type](s)
-            hc.ship(split_type, lt)
-        hc.ship(0, s)
-        if len(hcs) == 0 or hc != hcs[-1]:
-            hcs.append(hc)
-    hcs = set(hcs)
-    for hc in hcs:
-        hc.cal()
-    return hcs
-
-
 def sortHandCards(hca, hcb):
     if hca.hands == hcb.hands:
         return hcb.weight - hca.weight
@@ -87,13 +71,11 @@ def sortHandCards(hca, hcb):
         return hca.hands - hcb.hands
 
 
-def determineHandCard(hcs):
-    return sorted(hcs, key=functools.cmp_to_key(sortHandCards))
 
+class HandCards(Cards):
 
-class HandCards(object):
-
-    def __init__(self):
+    def __init__(self, strings):
+        super().__init__(strings)
         self.split0 = ""
         self.split1 = ""
         self.split2 = []
@@ -101,8 +83,7 @@ class HandCards(object):
         self.split4 = []
 
         self.split22 = []
-        self.split33 = []
-
+        self.split33 = [] 
         self.seq2_weight = 0
         self.seq3_weight = 0
 
@@ -195,8 +176,26 @@ class AIPlayer(object):
 
     def __init__(self):
         self.handcards = []
-        self.cur_hc = None
+        self.hc = None
 
+
+    def genAllKindHandCards(self, strings):
+        pmt = list(itertools.permutations(range(1, 5), 4))
+        hcs = []
+        for tp in pmt:
+            hc = HandCards(strings)
+            s = strings
+            for split_type in tp:
+                lt, s = SPLIT_FUNC[split_type](s)
+                hc.ship(split_type, lt)
+            hc.ship(0, s)
+            if len(hcs) == 0 or hc != hcs[-1]:
+                hcs.append(hc)
+        hcs = set(hcs)
+        for hc in hcs:
+            hc.cal()
+        self.handcards = sorted(list(hcs), key=functools.cmp_to_key(sortHandCards))
+        self.hc = self.handcards[0]
 
 
 
@@ -215,13 +214,13 @@ if __name__ == '__main__':
     print()
 
     pp = pprint.PrettyPrinter()
+    aip = AIPlayer()
 
     start = timeit.default_timer()
-    ret = genAllKindHandCards(test)
+    ret = aip.genAllKindHandCards(test)
     stop = timeit.default_timer()
-    pp.pprint(ret)
+    pp.pprint(aip.handcards)
     print(stop-start)
 
-    print("\nsort->")
-    pp.pprint(determineHandCard(ret))
+    print("\n", aip.hc.show())
 

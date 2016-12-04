@@ -42,6 +42,10 @@ class Cards(object):
 
 
     def __str__(self):
+        return self.show()
+
+
+    def show(self):
         if len(self) == 0:
             return "-"
         ret = sorted(self.strings, key=sortfunc)

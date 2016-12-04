@@ -198,6 +198,27 @@ class AIPlayer(object):
         self.hc = self.handcards[0]
 
 
+    # 主动出牌
+    def initiativePlay(self):
+        if self.hc.split1:
+            self.hc.remove(self.hc.split1)
+            return self.hc.split1
+        if self.hc.split2:
+            self.hc.remove(self.hc.split22[0])
+            return self.hc.split22[0]
+
+
+    # 被动出牌
+    def passivePlay(self):
+        pass
+
+
+    def play(self, last_round):
+        pass
+
+
+    
+
 
 
 if __name__ == '__main__':
@@ -205,7 +226,8 @@ if __name__ == '__main__':
     import timeit
 
     #test = "w222AAQQQJJJ098766544"
-    test = "22AAKQJ9987776654"
+    #test = "22AAKQJ9987776654"
+    test = "77994466330055"
     print("test", test)
     print("split(2)", split(2, test))
     print("split(3)", split(3, test))

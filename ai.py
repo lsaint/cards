@@ -17,11 +17,15 @@
 import itertools
 import difflib
 import functools
+import random
 from collections import Counter
 
 from rule import *
 from card import Cards
 
+
+def probability(num):
+    return random.randint(1, 100) <= num
 
 
 def split(count, strings):
@@ -215,12 +219,12 @@ class AIPlayer(object):
 
     # 主动出牌
     def initiativePlay(self):
-        if self.hc.split1:
-            self.hc.remove(self.hc.split1)
-            return self.hc.split1
-        if self.hc.split2:
+        if self.hc.split22:
             self.hc.remove(self.hc.split22[0])
             return self.hc.split22[0]
+        if self.hc.split1:
+            self.hc.remove(self.hc.split1[0])
+            return self.hc.split1[0]
 
 
     # 被动出牌
@@ -232,7 +236,7 @@ class AIPlayer(object):
         pass
 
 
-    
+
 
 
 

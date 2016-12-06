@@ -100,7 +100,7 @@ class HandCards(Cards):
         self.split4 = []
 
         self.split22 = []
-        self.split33 = [] 
+        self.split33 = []
         self.seq2_weight = 0
         self.seq3_weight = 0
 
@@ -148,8 +148,17 @@ class HandCards(Cards):
         c4 = len(self.split4)
         c22 = len(self.split22)
         c33 = len(self.split33)
-        self.hands = c0 + c1 + c2 + c3 + c4 + c22 + c33
+        self.hands = c0 + c1 + c2 + c3 + c4 + c22 + c33 - self.calTrioRelated()
         return self.hands
+
+
+    def calTrioRelated(self):
+        # trio with 1 single or 1 pair
+        h = len(self.split0) + len(self.split2)
+        trio = len(self.split3)
+        for seq in self.split33:
+            trio += len(seq) / 3
+        return trio if trio <= h else h
 
 
     def calWeight(self):
@@ -183,6 +192,7 @@ class HandCards(Cards):
             setattr(self, "split%s%s" % (mul, mul), split)
 
 
+
     def cal(self):
         self.calMultiSeq(2, 5, 2)
         self.calMultiSeq(3, 6, 3)
@@ -207,7 +217,7 @@ class AIPlayer(object):
             for split_type in tp:
                 lt, s = SPLIT_FUNC[split_type](s)
                 hc.ship(split_type, lt)
-            hc.ship(0, s)
+            hc.ship(0, list(s))
             if len(hcs) == 0 or hc != hcs[-1]:
                 hcs.append(hc)
         hcs = set(hcs)
@@ -244,8 +254,8 @@ if __name__ == '__main__':
     import pprint
     import timeit
 
-    test = "w222AAQQQJJJ098766544"
-    #test = "22AAKQJ9987776654"
+    #test = "w222AAQQQJJJ098766544"
+    test = "22AAKQJ9987776654"
     #test = "3456790JQKA"
     print("test", test)
     print("split(2)", split(2, test))

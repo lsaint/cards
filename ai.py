@@ -233,16 +233,15 @@ class AIPlayer(object):
         if len(self.hc.split0) >= count:
             ret = self.hc.split0[0:count]
             if not set(ret).intersection(exclude):
-                self.hc.remove(ret)
                 return ret
 
         exclude = set(['KK', 'AA', '22'])
         if len(self.hc.split22) >= count:
             ret = self.hc.split22[0:count]
             if not set(ret).intersection(exclude):
-                self.hc.remove(ret)
                 return ret
 
+        return ""
 
 
     # 主动出牌
@@ -255,9 +254,11 @@ class AIPlayer(object):
         if self.hc.split1:
             self.hc.remove(self.hc.split1[0])
             return self.hc.split1[0]
-        # 3.trio-seq
+        # 3.trio
         if self.hc.split3:
-            self.hc.remove()
+            rel = self.getRelatedCards()
+            ret = self.hc.split3[0] + rel
+            self.hc.remove(ret)
 
 
     # 被动出牌

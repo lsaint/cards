@@ -62,7 +62,8 @@ class Cards(object):
 
     def remove(self, cards):
         lt = list(self.strings)
-        for s in cards.strings:
+        ss = cards.strings if type(cards) == Card else cards
+        for s in ss:
             lt.remove(s)
         self.strings = "".join(lt)
 

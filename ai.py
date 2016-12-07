@@ -93,7 +93,7 @@ class HandCards(Cards):
 
     def __init__(self, strings):
         super().__init__(strings)
-        self.split0 = ""
+        self.split0 = []
         self.split1 = []
         self.split2 = []
         self.split3 = []
@@ -227,14 +227,37 @@ class AIPlayer(object):
         self.hc = self.handcards[0]
 
 
+    def getRelatedCards(self, count=1):
+        # when play trio or trio-seq, decide which cards to take with
+        exclude = set(['A', '2', 'w', 'W'])
+        if len(self.hc.split0) >= count:
+            ret = self.hc.split0[0:count]
+            if not set(ret).intersection(exclude):
+                self.hc.remove(ret)
+                return ret
+
+        exclude = set(['KK', 'AA', '22'])
+        if len(self.hc.split22) >= count:
+            ret = self.hc.split22[0:count]
+            if not set(ret).intersection(exclude):
+                self.hc.remove(ret)
+                return ret
+
+
+
     # 主动出牌
     def initiativePlay(self):
+        # 1.pair-seq
         if self.hc.split22:
             self.hc.remove(self.hc.split22[0])
             return self.hc.split22[0]
+        # 2.single-seq
         if self.hc.split1:
             self.hc.remove(self.hc.split1[0])
             return self.hc.split1[0]
+        # 3.trio-seq
+        if self.hc.split3:
+            self.hc.remove()
 
 
     # 被动出牌
@@ -254,8 +277,8 @@ if __name__ == '__main__':
     import pprint
     import timeit
 
-    #test = "w222AAQQQJJJ098766544"
-    test = "22AAKQJ9987776654"
+    test = "w222AAQQQJJJ098766544"
+    #test = "22AAKQJ9987776654"
     #test = "3456790JQKA"
     print("test", test)
     print("split(2)", split(2, test))
@@ -273,5 +296,6 @@ if __name__ == '__main__':
     pp.pprint(aip.handcards)
     print(stop-start)
 
+    print("\n", aip.getRelatedCards())
     print("\n", aip.hc.show())
 

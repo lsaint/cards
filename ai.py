@@ -22,6 +22,7 @@ from collections import Counter
 
 from rule import *
 from card import Cards
+from player import PLAY_FIRST, PLAY_PASS
 
 
 def probability(num):
@@ -212,16 +213,29 @@ class HandCards(Cards):
 class AIPlayer(object):
 
     def __init__(self):
+        self.cardStrings = ""
         self.handcards = []
         self.hc = None
 
 
-    def genAllKindHandCards(self, strings):
-        pmt = list(itertools.permutations(range(1, 5), 4))
+    def pick(self, s):
+        self.cardStrings += s
+
+
+    def readyPlay(self):
+        self.genAllKindHandCards()
+
+
+    def isEmpty(self):
+        return not bool(len(self.hc.strings))
+
+
+    def genAllKindHandCards(self):
+        pmt = list(itertools.permutations(range(1, 5), 4)) # 排列
         hcs = []
         for tp in pmt:
-            hc = HandCards(strings)
-            s = strings
+            hc = HandCards(self.cardStrings)
+            s = self.cardStrings
             for split_type in tp:
                 lt, s = SPLIT_FUNC[split_type](s)
                 hc.ship(split_type, lt)
@@ -289,14 +303,17 @@ class AIPlayer(object):
 
 
     # 被动出牌
-    def passivePlay(self):
+    def passivePlay(self, last_round):
         pass
 
 
     def play(self, last_round):
-        pass
-
-
+        if last_round in (PLAY_FIRST, PLAY_PASS):
+            ret = self.initiativePlay()
+        else:
+            ret = self.passivePlay(last_round)
+        self.hc.remove(ret)
+        return ret
 
 
 
@@ -317,9 +334,10 @@ if __name__ == '__main__':
 
     pp = pprint.PrettyPrinter()
     aip = AIPlayer()
+    aip.cardStrings = test
 
     start = timeit.default_timer()
-    ret = aip.genAllKindHandCards(test)
+    ret = aip.genAllKindHandCards()
     stop = timeit.default_timer()
     pp.pprint(aip.handcards)
     print(stop-start)

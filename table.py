@@ -3,6 +3,7 @@ import random, sys
 from state_machine import *
 
 from player import *
+from ai import AIPlayer
 from card import Card, Cards
 
 
@@ -54,8 +55,9 @@ class Table(object):
     def doDeal(self):
         random.shuffle(POKERS)
         for i, v in enumerate(POKERS):
-            self.players[i % MAX_PLAYER].cards.append(POKERS[i])
-
+            self.players[i % MAX_PLAYER].pick(POKERS[i])
+        for player in self.players:
+            player.readyPlay()
         self.p1()
 
 

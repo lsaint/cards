@@ -14,6 +14,14 @@ class Player(object):
         self.cards = Cards()
 
 
+    def pick(self, card):
+        self.cards.append(card)
+
+
+    def readyPlay(self):
+        pass
+
+
     def play(self, last_round):
         print("hand: %s \n" % self.cards)
         inputs = input("your turn, enter letter to play or enter p to pass:")
@@ -50,11 +58,11 @@ class Player(object):
 
 
 
-class AIPlayer(Player):
-
-    def play(self, last_round):
-        ret = self.cards[random.randint(0, len(self.cards.strings)-1)]
-        print("AI Player play %s" % ret)
-        self.removeCards(Cards(ret))
-        return ret
+#class AIPlayer(Player):
+#
+#    def play(self, last_round):
+#        ret = self.cards[random.randint(0, len(self.cards.strings)-1)]
+#        print("AI Player play %s" % ret)
+#        self.removeCards(Cards(ret))
+#        return ret
 

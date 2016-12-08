@@ -66,6 +66,7 @@ def splitL(strings):
     return ret, str_set + df
 
 
+
 def strDelDiff(a, b):
     ret = []
     for d in difflib.ndiff(a, b):
@@ -93,16 +94,17 @@ class HandCards(Cards):
 
     def __init__(self, strings):
         super().__init__(strings)
-        self.split0 = []
-        self.split1 = []
-        self.split2 = []
-        self.split3 = []
-        self.split4 = []
+        self.split0 = []    # single
+        self.split1 = []    # single-seq
+        self.split2 = []    # pair
+        self.split3 = []    # trio
+        self.split4 = []    # bomb
+        self.rocket = ""
 
-        self.split22 = []
-        self.split33 = []
-        self.seq2_weight = 0
-        self.seq3_weight = 0
+        self.split22 = []   # pair-seq
+        self.split33 = []   # trio-seq
+        self.seq2_weight = 0    # pair-seq weight
+        self.seq3_weight = 0    # trio-seq weight
 
         self.hands = 0
         self.weight = 0
@@ -138,6 +140,13 @@ class HandCards(Cards):
 
     def ship(self, split_type, ss):
         setattr(self, "split%s" % split_type, ss)
+
+
+    def splitRocket(self, strings):
+        if ROCKET in strings:
+            self.rocket = ROCKET
+            return strings.replace(ROCKET, "")
+        return strings
 
 
     def calHands(self):
@@ -217,6 +226,7 @@ class AIPlayer(object):
             for split_type in tp:
                 lt, s = SPLIT_FUNC[split_type](s)
                 hc.ship(split_type, lt)
+            s = hc.splitRocket(s)
             hc.ship(0, list(s))
             if len(hcs) == 0 or hc != hcs[-1]:
                 hcs.append(hc)

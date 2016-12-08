@@ -201,7 +201,6 @@ class HandCards(Cards):
             setattr(self, "split%s%s" % (mul, mul), split)
 
 
-
     def cal(self):
         self.calMultiSeq(2, 5, 2)
         self.calMultiSeq(3, 6, 3)
@@ -256,19 +255,37 @@ class AIPlayer(object):
 
     # 主动出牌
     def initiativePlay(self):
-        # 1.pair-seq
+        # .pair-seq
         if self.hc.split22:
-            self.hc.remove(self.hc.split22[0])
             return self.hc.split22[0]
-        # 2.single-seq
+        # .single-seq
         if self.hc.split1:
-            self.hc.remove(self.hc.split1[0])
             return self.hc.split1[0]
-        # 3.trio
+        # .trio
         if self.hc.split3:
             rel = self.getRelatedCards()
             ret = self.hc.split3[0] + rel
-            self.hc.remove(ret)
+            return ret
+        # .trio-seq
+        if self.hc.split33:
+            rel = self.getRelatedCards(2)
+            ret = self.hc.split33[0] + rel
+            return ret
+
+        holding = ""
+        # .pair
+        if self.hc.split2:
+            p = self.hc.split2[0]
+            if p not in ("22",):
+                return p
+            holding = p
+        # .single
+        if self.hc.split0:
+            s = self.hc.split0[0]
+            if s not in ("2", "w", "W"):
+                return s
+            holding = s
+        return holding
 
 
     # 被动出牌

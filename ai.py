@@ -100,10 +100,15 @@ class HandCards(Cards):
         self.split2 = []    # pair
         self.split3 = []    # trio
         self.split4 = []    # bomb
-        self.rocket = ""
-
         self.split22 = []   # pair-seq
         self.split33 = []   # trio-seq
+        self.rocket = []
+        self.name_split = {"single": self.split0, "pair": self.split2,
+                            "trio": self.split3, "bomb": self.split4,
+                            "seq_pair": self.split22,
+                            "seq_trio": self.split33,
+                            "rocket": self.rocket}
+
         self.seq2_weight = 0    # pair-seq weight
         self.seq3_weight = 0    # trio-seq weight
 
@@ -127,6 +132,7 @@ class HandCards(Cards):
                                 " hands:%s" % self.hands,
                                 " weight:%s" % self.weight)
 
+
     def __repr__(self):
         return self.__str__()
 
@@ -139,13 +145,32 @@ class HandCards(Cards):
                 len(self.split4) == len(rhs.split4)
 
 
+    def remove(self, cards):
+        print("removing", cards, type(cards))
+        if len(cards) >= 4:
+            cards.resloveRelatedCards()
+        t = cards.ctype
+        if t[-1].isdigit():
+            t = t[0:-1]
+        lt = self.name_split[t]
+        lt.remove(cards.strings)
+
+        rel = cards.related
+        if rel:
+            for ss in related:
+                if len(ss) == 1:
+                    self.split0.remove(ss)
+                else:
+                    self.split2.remove(ss)
+
+
     def ship(self, split_type, ss):
         setattr(self, "split%s" % split_type, ss)
 
 
     def splitRocket(self, strings):
         if ROCKET in strings:
-            self.rocket = ROCKET
+            self.rocket = [ROCKET]
             return strings.replace(ROCKET, "")
         return strings
 
@@ -308,10 +333,12 @@ class AIPlayer(object):
 
 
     def play(self, last_round):
-        if last_round in (PLAY_FIRST, PLAY_PASS):
-            ret = self.initiativePlay()
-        else:
-            ret = self.passivePlay(last_round)
+        #if last_round in (PLAY_FIRST, PLAY_PASS):
+        #    ret = self.initiativePlay()
+        #else:
+        #    ret = self.passivePlay(last_round)
+
+        ret = Cards(self.initiativePlay()) # test
         self.hc.remove(ret)
         return ret
 

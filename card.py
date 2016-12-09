@@ -28,9 +28,14 @@ class Card(object):
 
 
 class Cards(object):
+    '''cards in player's hand or played cards'''
 
-    def __init__(self, ss=""):
+    def __init__(self, ss="", ctype=None, value=None):
         self.strings = upper(ss)
+
+        self.ctype = ctype
+        self.value = value
+        self.related = []
 
 
     def __len__(self):
@@ -43,6 +48,19 @@ class Cards(object):
 
     def __str__(self):
         return self.show()
+
+
+    def resloveRelatedCards(self):
+        if self.ctype == "trio_single":
+            self.related = [self.strings[4]]
+        elif self.ctype == "trio_pair":
+            self.related = [self.strings[3:4]]
+        elif self.ctype == "bomb_pair":
+            self.related = [self.strings[3:4], self.strings[5:6]]
+        elif self.ctype == "bomb_single":
+            self.related = [self.strings[4], self.strings[5]]
+        for r in self.related:
+            self.strings = self.strings.replace(r, "")
 
 
     def show(self):
@@ -77,3 +95,8 @@ if __name__ == '__main__':
 
     cards.remove(Cards("AK"))
     print(cards)
+
+    print()
+    cards = Cards("AAAA34", "bomb_single")
+    cards.resloveRelatedCards()
+    print(cards.strings, cards.related)

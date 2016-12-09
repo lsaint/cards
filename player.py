@@ -32,9 +32,9 @@ class Player(object):
             inputs = upper(inputs)
             check_ret, v = self.check(inputs)
             if check_ret is True:
-                cards = Cards(inputs)
+                cards = Cards(inputs, v[0], v[1])
                 self.removeCards(cards)
-                return v
+                return cards
             inputs = input(v)
 
 

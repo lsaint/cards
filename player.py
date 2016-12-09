@@ -30,23 +30,22 @@ class Player(object):
             if inputs.lower() == "p":
                 return PLAY_PASS
             inputs = upper(inputs)
-            check_ret = self.check(inputs)
+            check_ret, v = self.check(inputs)
             if check_ret is True:
-                break
-            inputs = input(check_ret)
-
-        cards = Cards(inputs)
-        self.removeCards(cards)
-        return cards
+                cards = Cards(inputs)
+                self.removeCards(cards)
+                return v
+            inputs = input(v)
 
 
     def check(self, inputs):
         if not self.cards.isContain(Cards(inputs)):
-            return "played not exist card!  your turn:"
-        if validate(inputs) < 0:
-            return "invalid card type! your turn:"
+            return False, "played not exist card!  your turn:"
+        v = cardStringsValue(inputs)
+        if v[1] < 0:
+            return False, "invalid card type! your turn:"
 
-        return True
+        return True, v
 
 
     def removeCards(self, cards):

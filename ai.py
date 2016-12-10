@@ -103,11 +103,7 @@ class HandCards(Cards):
         self.split22 = []   # pair-seq
         self.split33 = []   # trio-seq
         self.rocket = []
-        self.name_split = {"single": self.split0, "pair": self.split2,
-                            "trio": self.split3, "bomb": self.split4,
-                            "seq_pair": self.split22,
-                            "seq_trio": self.split33,
-                            "rocket": self.rocket}
+        self.name_split ={}
 
         self.seq2_weight = 0    # pair-seq weight
         self.seq3_weight = 0    # trio-seq weight
@@ -146,7 +142,7 @@ class HandCards(Cards):
 
 
     def remove(self, cards):
-        print("removing", cards, type(cards))
+        print("removing", cards, self)
         if len(cards) >= 4:
             cards.resloveRelatedCards()
         t = cards.ctype
@@ -232,6 +228,12 @@ class HandCards(Cards):
         self.calMultiSeq(3, 6, 3)
         self.calHands()
         self.calWeight() # at last
+        self.name_split = {"single": self.split0, "pair": self.split2,
+                            "trio": self.split3, "bomb": self.split4,
+                            "seq_single": self.split1,
+                            "seq_pair": self.split22,
+                            "seq_trio": self.split33,
+                            "rocket": self.rocket}  # shiped
 
 
 
@@ -337,8 +339,10 @@ class AIPlayer(object):
         #    ret = self.initiativePlay()
         #else:
         #    ret = self.passivePlay(last_round)
-
-        ret = Cards(self.initiativePlay()) # test
+        
+        p = self.initiativePlay()
+        v = cardStringsValue(p)
+        ret = Cards(p, v[0], v[1]) # test
         self.hc.remove(ret)
         return ret
 

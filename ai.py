@@ -142,7 +142,7 @@ class HandCards(Cards):
 
 
     def remove(self, cards):
-        print("removing", cards, self)
+        super().remove(cards)
         if len(cards) >= 4:
             cards.resloveRelatedCards()
         t = cards.ctype
@@ -339,11 +339,12 @@ class AIPlayer(object):
         #    ret = self.initiativePlay()
         #else:
         #    ret = self.passivePlay(last_round)
-        
+        print("AI", self.hc)
         p = self.initiativePlay()
         v = cardStringsValue(p)
         ret = Cards(p, v[0], v[1]) # test
         self.hc.remove(ret)
+        print("play", ret)
         return ret
 
 

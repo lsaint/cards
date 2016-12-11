@@ -152,12 +152,13 @@ class HandCards(Cards):
         lt.remove(cards.strings)
 
         rel = cards.related
-        if rel:
-            for ss in related:
-                if len(ss) == 1:
-                    self.split0.remove(ss)
-                else:
-                    self.split2.remove(ss)
+        if not rel:
+            return
+        for ss in rel:
+            if len(ss) == 1:
+                self.split0.remove(ss)
+            else:
+                self.split2.remove(ss)
 
 
     def ship(self, split_type, ss):
@@ -339,10 +340,10 @@ class AIPlayer(object):
         #    ret = self.initiativePlay()
         #else:
         #    ret = self.passivePlay(last_round)
-        print("AI", self.hc)
         p = self.initiativePlay()
         v = cardStringsValue(p)
         ret = Cards(p, v[0], v[1]) # test
+        print("AI", self.hc)
         self.hc.remove(ret)
         print("play", ret)
         return ret

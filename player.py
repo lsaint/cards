@@ -42,7 +42,7 @@ class Player(object):
         if not self.cards.isContain(Cards(inputs)):
             return False, "played not exist card!  your turn:"
         v = cardStringsValue(inputs)
-        if v[1] < 0:
+        if v[1] <= 0:
             return False, "invalid card type! your turn:"
 
         return True, v

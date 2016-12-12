@@ -36,6 +36,7 @@ class Cards(object):
         self.ctype = ctype
         self.value = value
         self.related = []
+        self.rel_type = None
 
 
     def __len__(self):
@@ -53,12 +54,16 @@ class Cards(object):
     def resloveRelatedCards(self):
         if self.ctype == "trio_single":
             self.related = [self.strings[4]]
+            self.rel_type = RT_SINGLE
         elif self.ctype == "trio_pair":
             self.related = [self.strings[3:4]]
+            self.related = RT_PAIR
         elif self.ctype == "bomb_pair":
             self.related = [self.strings[3:4], self.strings[5:6]]
+            self.rel_type = RT_PAIR2
         elif self.ctype == "bomb_single":
             self.related = [self.strings[4], self.strings[5]]
+            self.rel_type = RT_SINGLE2
         for r in self.related:
             self.strings = self.strings.replace(r, "")
 

@@ -145,10 +145,7 @@ class HandCards(Cards):
         super().remove(cards)
         if len(cards) >= 4:
             cards.resloveRelatedCards()
-        t = cards.ctype
-        if t[-1].isdigit():
-            t = t[0:-1]
-        lt = self.name_split[t]
+        lt = self.getSplitByCards(cards)
         lt.remove(cards.strings)
 
         rel = cards.related
@@ -159,6 +156,13 @@ class HandCards(Cards):
                 self.split0.remove(ss)
             else:
                 self.split2.remove(ss)
+
+
+    def getSplitByCards(self, cards):
+        t = cards.ctype
+        if t[-1].isdigit():
+            t = t[0:-1]
+        return self.name_split[t]
 
 
     def ship(self, split_type, ss):
@@ -332,17 +336,33 @@ class AIPlayer(object):
 
     # 被动出牌
     def passivePlay(self, last_round):
-        pass
+        t, v = last_round.rel_type, last_round.value
+        lt = self.hc.getSplitByCards(last_round)
+        if not lt or cardStringsValue(lt[0])[1] < v:
+            return PLAY_PASS
+        if last_round.rel_type is None:
+            return lt[0]
+
+        if t == RT_SINGLE and self.hc.split0:
+            return lt[0] + self.hc.split0[0]
+        if t == RT_SINGLE2 and len(self.hc.split0) >= 2:
+            return lt[0] + self.hc.split0[0] + self.hc.split[1]
+        if t == RT_PAIR and self.hc.split2:
+            return lt[0] + self.hc.split
+        if t == RT_PAIR2 and len(self.hc.split2):
+            return lt[0] + self.hc.split2[0] + self.hc.split2[1]
+
+        return PLAY_PASS
 
 
     def play(self, last_round):
-        #if last_round in (PLAY_FIRST, PLAY_PASS):
-        #    ret = self.initiativePlay()
-        #else:
-        #    ret = self.passivePlay(last_round)
-        p = self.initiativePlay()
+        if last_round in (PLAY_FIRST, PLAY_PASS):
+            p = self.initiativePlay()
+        else:
+            p = self.passivePlay(last_round)
+        #p = self.initiativePlay()
         v = cardStringsValue(p)
-        ret = Cards(p, v[0], v[1]) # test
+        ret = Cards(p, v[0], v[1])
         print("AI", self.hc)
         self.hc.remove(ret)
         print("play", ret)

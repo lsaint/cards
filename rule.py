@@ -12,7 +12,11 @@ CARD_TYPE = [
     'seq_trio_single2', 'seq_trio_single3', 'seq_trio_single4', 'seq_trio_single5',
     'bomb_pair', 'bomb_single'
 ]
-ROCKET = "wW"
+RT_SINGLE   = 1
+RT_SINGLE2  = 11
+RT_PAIR     = 2
+RT_PAIR2    = 22
+ROCKET      = "wW"
 MAX_VALUE   = 3737
 MIN_VALUE   = -4466
 BOMB_VALUE  = 1000

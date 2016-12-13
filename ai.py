@@ -360,7 +360,8 @@ class AIPlayer(object):
             p = self.initiativePlay()
         else:
             p = self.passivePlay(last_round)
-        #p = self.initiativePlay()
+        if p == PLAY_PASS:
+            return p
         v = cardStringsValue(p)
         ret = Cards(p, v[0], v[1])
         print("AI", self.hc)

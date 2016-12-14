@@ -336,12 +336,17 @@ class AIPlayer(object):
 
     # 被动出牌
     def passivePlay(self, last_round):
+        ret = PLAY_PASS
         t, v = last_round.rel_type, last_round.value
         lt = self.hc.getSplitByCards(last_round)
-        if not lt or cardStringsValue(lt[0])[1] < v:
+        if not lt:
             return PLAY_PASS
-        if last_round.rel_type is None:
-            return lt[0]
+        for c in lt:
+            if cardStringsValue(c)[1] > v:
+                ret = c
+                break
+        if ret != PLAY_PASS and last_round.rel_type is None:
+            return ret
 
         if t == RT_SINGLE and self.hc.split0:
             return lt[0] + self.hc.split0[0]
@@ -352,7 +357,7 @@ class AIPlayer(object):
         if t == RT_PAIR2 and len(self.hc.split2):
             return lt[0] + self.hc.split2[0] + self.hc.split2[1]
 
-        return PLAY_PASS
+        return ret
 
 
     def play(self, last_round):

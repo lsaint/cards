@@ -93,7 +93,7 @@ def containsAll(parent, child):
     return True
 
 
-def findSeq(ss, seq_count=2):
+def findSeq(ss, seq_count):
     s = SequenceMatcher(None, ss, LONGEST_SEQ)
     m = s.get_matching_blocks()
     ret = []
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
     print('cardStringsValue("AAAA")', cardStringsValue('AAAA'))
     print('cardStringsValue("AA")', cardStringsValue('AA'))
-    print('cardStringsValue("AAA")', cardStringsValue('AAA'))
+    print('cardStringsValue("JJQQ")', cardStringsValue('JJQQ'))
 
     test = "346890"
     print(findSeq(test))

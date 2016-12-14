@@ -160,8 +160,15 @@ class HandCards(Cards):
 
     def getSplitByCards(self, cards):
         t = cards.ctype
-        if t[-1].isdigit():
-            t = t[0:-1]
+        print("cards",cards,"type", t)
+        for i in range(2):
+            if t[-1].isdigit():
+                t = t[0:-1]
+        lt = t.split("_")
+        if lt[0] in ("trio", "bomb"):
+            return lt[0]
+        if len(lt) == 3:
+            return lt[0] + "_" + lt[1]
         return self.name_split[t]
 
 
@@ -209,14 +216,14 @@ class HandCards(Cards):
         return self.weight
 
 
-    def calMultiSeq(self, mul, w, add):
+    def calMultiSeq(self, mul, count, weight, weight_coef):
         r = sortCardStrings(set("".join(getattr(self, "split%s"%mul))))
-        seqs = findSeq(r)
+        seqs = findSeq(r, count)
         if seqs == 0:
             return
         for seq in seqs:
             rw = getattr(self, "seq%s_weight" % mul)
-            setattr(self, "seq%s_weight"%mul, rw + w + (len(seq)-2) * add)
+            setattr(self, "seq%s_weight"%mul, rw + weight + (len(seq)-2) * weight_coef)
 
             for s in seq:
                 split = getattr(self, "split%s" % mul)
@@ -229,8 +236,8 @@ class HandCards(Cards):
 
 
     def cal(self):
-        self.calMultiSeq(2, 5, 2)
-        self.calMultiSeq(3, 6, 3)
+        self.calMultiSeq(2, 3, 5, 2)
+        self.calMultiSeq(3, 2, 6, 3)
         self.calHands()
         self.calWeight() # at last
         self.name_split = {"single": self.split0, "pair": self.split2,
@@ -291,12 +298,12 @@ class AIPlayer(object):
                 return ret
 
         exclude = set(['KK', 'AA', '22'])
-        if len(self.hc.split22) >= count:
-            ret = self.hc.split22[0:count]
+        if len(self.hc.split2) >= count:
+            ret = self.hc.split2[0:count]
             if not set(ret).intersection(exclude):
                 return ret
 
-        return ""
+        return []
 
 
     # 主动出牌
@@ -310,13 +317,13 @@ class AIPlayer(object):
         # .trio
         if self.hc.split3:
             rel = self.getRelatedCards()
-            ret = self.hc.split3[0] + rel
-            return ret
+            rel.append(self.hc.split3[0])
+            return rel
         # .trio-seq
         if self.hc.split33:
             rel = self.getRelatedCards(2)
-            ret = self.hc.split33[0] + rel
-            return ret
+            rel.append(self.hc.split33[0])
+            return rel
 
         holding = ""
         # .pair
@@ -361,15 +368,17 @@ class AIPlayer(object):
 
 
     def play(self, last_round):
+        print("AI", self.hc)
         if last_round in (PLAY_FIRST, PLAY_PASS):
             p = self.initiativePlay()
         else:
             p = self.passivePlay(last_round)
         if p == PLAY_PASS:
+            print("PASS")
             return p
+        print("aip", p)
         v = cardStringsValue(p)
         ret = Cards(p, v[0], v[1])
-        print("AI", self.hc)
         self.hc.remove(ret)
         print("play", ret)
         return ret

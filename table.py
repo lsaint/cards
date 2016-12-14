@@ -61,6 +61,7 @@ class Table(object):
             count += 1
             if count == TWO_PLAYER_CARD_NUM:
                 break
+        self.players[0].cardStrings = "0AAAJJQQ"   # test
         for player in self.players:
             player.readyPlay()
         self.p1()

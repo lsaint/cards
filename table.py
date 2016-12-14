@@ -9,8 +9,9 @@ from card import Card, Cards
 
 
 POKERS_AMOUNT = 54
-POKERS = list("A234567890JQK")# * 4 + "wW")
+POKERS = list("A234567890JQK" * 4 + "wW")
 MAX_PLAYER = 2
+TWO_PLAYER_CARD_NUM = 40
 
 
 @acts_as_state_machine
@@ -53,9 +54,13 @@ class Table(object):
 
     @after("deal")
     def doDeal(self):
+        count = 0
         random.shuffle(POKERS)
         for i, v in enumerate(POKERS):
             self.players[i % MAX_PLAYER].pick(POKERS[i])
+            count += 1
+            if count == TWO_PLAYER_CARD_NUM:
+                break
         for player in self.players:
             player.readyPlay()
         self.p1()

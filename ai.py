@@ -160,7 +160,6 @@ class HandCards(Cards):
 
     def getSplitByCards(self, cards):
         t = cards.ctype
-        print("cards",cards,"type", t)
         for i in range(2):
             if t[-1].isdigit():
                 t = t[0:-1]
@@ -252,13 +251,13 @@ class HandCards(Cards):
 class AIPlayer(object):
 
     def __init__(self):
-        self.cardStrings = ""
+        self.card_strings = ""
         self.handcards = []
         self.hc = None
 
 
     def pick(self, s):
-        self.cardStrings += s
+        self.card_strings += s
 
 
     def readyPlay(self):
@@ -273,8 +272,8 @@ class AIPlayer(object):
         pmt = list(itertools.permutations(range(1, 5), 4)) # 排列
         hcs = []
         for tp in pmt:
-            hc = HandCards(self.cardStrings)
-            s = self.cardStrings
+            hc = HandCards(self.card_strings)
+            s = self.card_strings
             for split_type in tp:
                 lt, s = SPLIT_FUNC[split_type](s)
                 hc.ship(split_type, lt)
@@ -402,7 +401,7 @@ if __name__ == '__main__':
 
     pp = pprint.PrettyPrinter()
     aip = AIPlayer()
-    aip.cardStrings = test
+    aip.card_strings = test
 
     start = timeit.default_timer()
     ret = aip.genAllKindHandCards()

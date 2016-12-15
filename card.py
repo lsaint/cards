@@ -93,7 +93,8 @@ class Cards(object):
     def show(self):
         if len(self) == 0:
             return "-"
-        ret = sorted(self.strings, key=sortfunc)
+        rel = "".join(self.related)
+        ret = sorted(self.strings + rel, key=sortfunc)
         return "-".join(ret)
 
 

@@ -166,9 +166,9 @@ class HandCards(Cards):
                 t = t[0:-1]
         lt = t.split("_")
         if lt[0] in ("trio", "bomb"):
-            return lt[0]
+            t = lt[0]
         if len(lt) == 3:
-            return lt[0] + "_" + lt[1]
+            t = lt[0] + "_" + lt[1]
         return self.name_split[t]
 
 
@@ -318,12 +318,12 @@ class AIPlayer(object):
         if self.hc.split3:
             rel = self.getRelatedCards()
             rel.append(self.hc.split3[0])
-            return rel
+            return "".join(rel)
         # .trio-seq
         if self.hc.split33:
             rel = self.getRelatedCards(2)
             rel.append(self.hc.split33[0])
-            return rel
+            return "".join(rel)
 
         holding = ""
         # .pair
@@ -376,7 +376,7 @@ class AIPlayer(object):
         if p == PLAY_PASS:
             print("PASS")
             return p
-        print("aip", p)
+        print("aip", p, type(p))
         v = cardStringsValue(p)
         ret = Cards(p, v[0], v[1])
         self.hc.remove(ret)

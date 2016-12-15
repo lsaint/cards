@@ -52,20 +52,42 @@ class Cards(object):
 
 
     def resloveRelatedCards(self):
+        ''' eg.
+            QQQA
+           KQQQ
+           00JJJJQQ
+        '''
+        ss = self.strings
         if self.ctype == "trio_single":
-            self.related = [self.strings[4]]
+            if ss[0] != ss[1]:
+                self.related = [ss[0]]
+            else:
+                self.related = [ss[-1]]
             self.rel_type = RT_SINGLE
         elif self.ctype == "trio_pair":
-            self.related = [self.strings[3:4]]
+            if ss[0] != ss[2]:
+                self.related = [ss[0:2]]
+            else:
+                self.related = [ss[3:5]]
             self.related = RT_PAIR
         elif self.ctype == "bomb_pair":
-            self.related = [self.strings[3:4], self.strings[5:6]]
+            if ss[0:2] == ss[2:4]:
+                self.related = [ss[4:6], ss[6:8]]
+            elif ss[4:6] == ss[6:8]:
+                self.related = [ss[0:2], ss[2:4]]
+            else:
+                self.related = [ss[0:2], ss[6:8]]
             self.rel_type = RT_PAIR2
         elif self.ctype == "bomb_single":
-            self.related = [self.strings[4], self.strings[5]]
+            if ss[1:3] == ss[3:5]:
+                self.related = [ss[0], ss[5]]
+            elif ss[0:2] == ss[2:4]:
+                self.related = [ss[4], ss[5]]
+            else:
+                self.related = [ss[0], ss[1]]
             self.rel_type = RT_SINGLE2
         for r in self.related:
-            self.strings = self.strings.replace(r, "")
+            self.strings = ss.replace(r, "")
 
 
     def show(self):

@@ -375,7 +375,6 @@ class AIPlayer(object):
         if p == PLAY_PASS:
             print("PASS")
             return p
-        print("aip", p, type(p))
         v = cardStringsValue(p)
         ret = Cards(p, v[0], v[1])
         self.hc.remove(ret)

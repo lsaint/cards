@@ -33,7 +33,6 @@ class Table(object):
 
     def __init__(self):
         self.players = []
-        self.last_round = PLAY_FIRST
 
 
     @before("deal")
@@ -50,6 +49,7 @@ class Table(object):
         self.player1.id = 1
         self.player2 = self.players[1]
         self.player2.id = 2
+        self.last_round = PLAY_FIRST
 
 
     @after("deal")
@@ -91,9 +91,9 @@ class Table(object):
     @after("over")
     def doGameOver(self):
         print("Winner is player%d" % (1 if self.player1.isEmpty() else 2))
-        print("---------------")
+        print()
         input("press any key to continue..")
-        self.wait()
+        self.start()
 
 
     @after("wait")

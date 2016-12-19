@@ -143,14 +143,19 @@ class HandCards(Cards):
 
     def remove(self, cards):
         super().remove(cards)
+        print(len(cards))
         if len(cards) >= 4:
             cards.resloveRelatedCards()
         lt = self.getSplitByCards(cards)
-        lt.remove(cards.strings)
-
+        print(lt, "remove", cards.strings)
         rel = cards.related
+        print(rel)
         if not rel:
+            lt.remove(cards.strings)
             return
+        to_rm = "".join(rel)
+        print("remove2", cards.strings.replace(to_rm, ""))
+        lt.remove(cards.strings.replace(to_rm, ""))
         for ss in rel:
             if len(ss) == 1:
                 self.split0.remove(ss)
@@ -320,8 +325,9 @@ class AIPlayer(object):
             return "".join(rel)
         # .trio-seq
         if self.hc.split33:
-            rel = self.getRelatedCards(2)
-            rel.append(self.hc.split33[0])
+            p = self.hc.split33[0]
+            rel = self.getRelatedCards(p/3)
+            rel.append(p)
             return "".join(rel)
 
         holding = ""

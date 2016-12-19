@@ -61,7 +61,7 @@ class Table(object):
             count += 1
             if count == TWO_PLAYER_CARD_NUM:
                 break
-        #self.players[0].card_strings = "0AAAJJQQ"   # test
+        self.players[0].card_strings = "708AQJW7709A5QQ247JJ"   # test
         print("AI raw:", self.players[0].card_strings)
         for player in self.players:
             player.readyPlay()
